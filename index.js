@@ -8,8 +8,11 @@ const { PORT } = require("./config/constants");
 // Create an express app
 const app = express();
 
+app.use(express.json());
 /**
  * Middlewares
+ *
+ *
  *
  * It is advisable to configure your middleware before configuring the routes
  * If you configure routes before the middleware, these routes will not use them
@@ -25,6 +28,14 @@ app.use(corsMiddleWare());
 const bodyParserMiddleWare = express.json();
 app.use(bodyParserMiddleWare);
 
+app.get("/spaces", async (req, res) => {
+  try {
+    const spaces = await Space.findAll();
+    res.send(spaces);
+  } catch (e) {
+    console.log(e.message);
+  }
+});
 /**
  * Routes
  *
