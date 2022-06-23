@@ -28,7 +28,7 @@ router.post("/login", async (req, res, next) => {
     }
 
     const fullUser = await User.findByPk(user.id, {
-      include: [{ model: Space, include: [Story] }], // I see it in the redux, becouse of this line?
+      include: [{ model: Space, include: [Story] }],
     });
 
     delete user.dataValues["password"]; // don't send back the password hash
