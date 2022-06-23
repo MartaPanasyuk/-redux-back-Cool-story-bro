@@ -4,6 +4,8 @@ const { toJWT } = require("../auth/jwt");
 const authMiddleware = require("../auth/middleware");
 const User = require("../models/").user;
 const { SALT_ROUNDS } = require("../config/constants");
+const Space = require("../models").space;
+const Story = require("../models").story;
 
 const router = new Router();
 
@@ -25,9 +27,13 @@ router.post("/login", async (req, res, next) => {
       });
     }
 
+    const fullUser = await User.findByPk(user.id, {
+      include: [{ model: Space, include: [Story] }], // I see it in the redux, becouse of this line?
+    });
+
     delete user.dataValues["password"]; // don't send back the password hash
     const token = toJWT({ userId: user.id });
-    return res.status(200).send({ token, user: user.dataValues });
+    return res.status(200).send({ token, user: fullUser });
   } catch (error) {
     console.log(error);
     return res.status(400).send({ message: "Something went wrong, sorry" });
@@ -49,9 +55,21 @@ router.post("/signup", async (req, res) => {
 
     delete newUser.dataValues["password"]; // don't send back the password hash
 
+    const newSpace = await Space.create({
+      title: `${newUser.name}'s space`,
+      userId: newUser.id,
+    });
+
+    const fullUser = await User.findByPk(newUser.id, {
+      include: [{ model: Space, include: [Story] }],
+    });
+
+    // { id, name, email, space: {}}
+
     const token = toJWT({ userId: newUser.id });
 
-    res.status(201).json({ token, user: newUser.dataValues });
+    res.status(201).json({ token, user: fullUser });
+    // res.send(newSpace);
   } catch (error) {
     if (error.name === "SequelizeUniqueConstraintError") {
       return res
@@ -69,7 +87,12 @@ router.post("/signup", async (req, res) => {
 router.get("/me", authMiddleware, async (req, res) => {
   // don't send back the password hash
   delete req.user.dataValues["password"];
-  res.status(200).send({ ...req.user.dataValues });
+
+  const fullUser = await User.findByPk(req.user.id, {
+    include: [{ model: Space, include: [Story] }],
+  });
+
+  res.status(200).send({ user: fullUser });
 });
 
 module.exports = router;

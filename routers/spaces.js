@@ -3,35 +3,28 @@ const router = new Router();
 
 //Model
 
-const Space = require("./models").space;
+const Space = require("../models").space;
+const Story = require("../models").story;
 
-/* 
-const { Router } = require("express");
-const router = new Router();
-// Models
-const Category = require("../models").category;
-const Product = require("../models").product;
-
-// Get all categories
+// Get all spaces
 router.get("/", async (req, res, next) => {
   try {
-    const categories = await Category.findAll();
-    res.send(categories);
+    const spaces = await Space.findAll({ include: Story });
+    res.send(spaces);
   } catch (e) {
     next(e);
   }
 });
 
-// Get categories by id with the products
+//Get spaces by Id with stories
 router.get("/:id", async (req, res, next) => {
   try {
-    const id = parseInt(req.params.id);
-    const oneCategory = await Category.findByPk(id, { include: Product });
-    res.send(oneCategory);
+    const spaceId = parseInt(req.params.id);
+    const oneSpace = await Space.findByPk(spaceId, { include: Story });
+    res.send(oneSpace);
   } catch (e) {
     next(e);
   }
 });
 
 module.exports = router;
-*/
