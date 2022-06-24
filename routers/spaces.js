@@ -51,4 +51,22 @@ router.post("/:spaceId/story", authMiddleware, async (req, res, next) => {
   }
 });
 
+//Update Space
+router.put("/:spaceId", authMiddleware, async (req, res, next) => {
+  try {
+    const { title, description, background, textcolor } = req.body;
+    const { spaceId } = req.params;
+    const spaceUpdate = await Space.findByPk(spaceId);
+    const updaytedSpace = await spaceUpdate.update({
+      title: title,
+      description: description,
+      background: background,
+      textcolor: textcolor,
+    });
+    res.send(updaytedSpace);
+  } catch (e) {
+    next(e);
+  }
+});
+
 module.exports = router;
