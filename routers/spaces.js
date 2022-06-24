@@ -45,7 +45,7 @@ router.post("/:spaceId/story", authMiddleware, async (req, res, next) => {
       spaceId,
     });
 
-    res.send({ story: newStory });
+    res.send(newStory);
   } catch (e) {
     next(e);
   }
