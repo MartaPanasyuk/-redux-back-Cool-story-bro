@@ -1,5 +1,7 @@
 const { Router } = require("express");
 const router = new Router();
+const { toJWT, toData } = require("../auth/jwt");
+const authMiddleware = require("../auth/middleware");
 
 //Model
 
@@ -27,25 +29,23 @@ router.get("/:id", async (req, res, next) => {
   }
 });
 
-//Cretae a story
-router.post("/:id", async (req, res, next) => {
-  const { name, content, imageUrl, token } = req.body;
+//Cretae a new story
+router.post("/:spaceId/story", authMiddleware, async (req, res, next) => {
+  const { spaceId } = req.params;
+  const { name, content, imageUrl } = req.body;
   if (!name) {
     return res.status(400).send("Your story should have a name!");
   }
 
   try {
-    const userId = parseInt(req.params.id);
     const newStory = await Story.create({
       name,
       content,
       imageUrl,
+      spaceId,
     });
 
-    const fullSpace = await Space.findByPk(newStory.id, {
-      include: [{ model: Story }],
-    });
-    res.send({ story: fullSpace });
+    res.send({ story: newStory });
   } catch (e) {
     next(e);
   }
