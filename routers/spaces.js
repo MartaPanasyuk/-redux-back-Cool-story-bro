@@ -60,10 +60,17 @@ router.put("/:spaceId", authMiddleware, async (req, res, next) => {
     const updaytedSpace = await spaceUpdate.update({
       title: title,
       description: description,
-      background: background,
-      textcolor: textcolor,
+      backgroundColor: background,
+      color: textcolor,
     });
-    res.send(updaytedSpace);
+
+    // An option to make the state update easier in the frontend is to
+    // already send the full space with stories.
+
+    // const fullSpace = await Space.findByPk(spaceId, {
+    //   include: [Story]
+    // })
+    res.send({ space: updaytedSpace });
   } catch (e) {
     next(e);
   }
