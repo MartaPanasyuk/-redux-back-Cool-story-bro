@@ -8,7 +8,7 @@ const Story = require("../models").story;
 const User = require("../models").user;
 const Favorite = require("../models").favoritelist;
 
-//Adding a favorite story  (route stories) ()
+//Adding a favorite story  (route stories) (app.use("/stories", storyRouter))
 router.post("/favorite", authMiddleware, async (req, res, next) => {
   try {
     const { userId, storyId } = req.body;
