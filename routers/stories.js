@@ -31,4 +31,14 @@ router.delete("/:id", async (req, res, next) => {
   }
 });
 
+//Get All Stories
+router.get("/", async (req, res, next) => {
+  try {
+    const storyList = await Story.findAll();
+    res.send(storyList);
+  } catch (e) {
+    next(e);
+  }
+});
+
 module.exports = router;
