@@ -1,5 +1,6 @@
 "use strict";
 const { Model } = require("sequelize");
+const favoritelist = require("./favoritelist");
 module.exports = (sequelize, DataTypes) => {
   class story extends Model {
     /**
@@ -11,6 +12,10 @@ module.exports = (sequelize, DataTypes) => {
       // - story belongs to space
       //- space has many story
       story.belongsTo(models.space, { foreignKey: "spaceId" });
+      story.belongsToMany(models.user, {
+        through: "favoritelist",
+        foreignKey: "storyId",
+      });
     }
   }
   story.init(
