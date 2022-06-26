@@ -14,6 +14,8 @@ module.exports = {
           model: "users",
           key: "id",
         },
+        onUpdate: "CASCADE",
+        onDelete: "CASCADE",
       },
       storyId: {
         type: Sequelize.INTEGER,
@@ -21,6 +23,8 @@ module.exports = {
           model: "stories",
           key: "id",
         },
+        onUpdate: "CASCADE",
+        onDelete: "CASCADE",
       },
       createdAt: {
         allowNull: false,

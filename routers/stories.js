@@ -6,14 +6,12 @@ const router = new Router();
 
 const Story = require("../models").story;
 const User = require("../models").user;
-const Favorite = require("../models").favoritelist;
 
-//Adding a favorite story  (route stories) (app.use("/stories", storyRouter))
-router.post("/favorite", authMiddleware, async (req, res, next) => {
+//Get All Stories
+router.get("/", async (req, res, next) => {
   try {
-    const { userId, storyId } = req.body;
-    const newFavorite = await Favorite.create({ userId, storyId });
-    res.send(newFavorite);
+    const stories = await Story.findAll();
+    res.send(stories);
   } catch (e) {
     next(e);
   }
@@ -26,16 +24,6 @@ router.delete("/:id", async (req, res, next) => {
     const oneStory = await Story.findByPk(storyId);
     await oneStory.destroy();
     res.send({ message: "story deleted", storyId: storyId });
-  } catch (e) {
-    next(e);
-  }
-});
-
-//Get All Stories
-router.get("/", async (req, res, next) => {
-  try {
-    const storyList = await Story.findAll();
-    res.send(storyList);
   } catch (e) {
     next(e);
   }
